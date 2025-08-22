@@ -1,0 +1,79 @@
+
+name: Archive Proxies
+
+on:
+  workflow_dispatch:
+  schedule:
+  #  https://crontab.guru/
+  - cron: "0 0 * * *"
+
+jobs:
+  test-and-sort-proxies:
+    name: Archive
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11.12"
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Archive app
+        run: |
+          cat <<'EOF' > archive.py
+          import os
+          import requests
+          import time
+          from datetime import datetime
+          
+          update_path = './update/'
+          
+          url = 'https://raw.githubusercontent.com/VPNforWindowsSub/configs/refs/heads/master/Eternity.txt'
+          data = requests.get(url).text
+          while True:
+                time.sleep(10)
+                data = requests.get(url).text
+                if requests.get(url).ok:
+                    break
+          
+          def backup(data):
+            date_dir = datetime.now().strftime("%y%m")
+            date_file = datetime.now().strftime("%y%m%d_%H%M")
+          
+            try:
+              os.makedirs(f"{update_path}/{date_dir}", exist_ok=True)
+            except OSError:
+              print("Error creating backup directory")
+              return
+          
+            file_path = f"{update_path}/{date_dir}/{date_file}.txt"
+          
+            try:  
+              with open(file_path, "w", encoding="utf-8") as f:
+                f.write(data)
+            except OSError:
+              print("Error writing backup file")
+          
+          backup(data)
+          EOF
+          python archive.py
+
+      - name: Commit and Push Results
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git pull origin ${{ github.ref_name }}
+          git add -A
+          if ! git diff --staged --quiet; then
+            git commit -m "✔️ Archived list"
+            git push
+          else
+            echo "No changes to commit."
+          fi
