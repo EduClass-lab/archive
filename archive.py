@@ -3,24 +3,22 @@ import requests
 import time
 from datetime import datetime
 
+update_path = './update/'
 
 url = 'https://raw.githubusercontent.com/VPNforWindowsSub/configs/refs/heads/master/Eternity.txt'
-urli = 'https://raw.githubusercontent.com/VPNforWindowsSub/configs/refs/heads/master/Resilience.txt'
 data = requests.get(url).text
-datai = requests.get(urli).text
-
 while True:
       time.sleep(10)
       data = requests.get(url).text
       if requests.get(url).ok:
           break
 
-def backup(data,update_path):
+def backup(data):
   date_dir = datetime.now().strftime("%y%m")
   date_file = datetime.now().strftime("%y%m%d_%H%M")
 
   try:
-    os.makedirs(f"./{update_path}/{date_dir}", exist_ok=True)
+    os.makedirs(f"{update_path}/{date_dir}", exist_ok=True)
   except OSError:
     print("Error creating backup directory")
     return
@@ -33,8 +31,4 @@ def backup(data,update_path):
   except OSError:
     print("Error writing backup file")
 
-backup(data,'update')
-backup(datai,'Res')
-
-
-
+backup(data)
