@@ -13,9 +13,9 @@ CONFIG = {
             'name': 'eternity'
         },
         {
-            'url': 'https://raw.githubusercontent.com/VPNforWindowsSub/configs/refs/heads/master/Resilience.txt',
-            'path': 'res',
-            'name': 'resilience'
+            'url': 'https://raw.githubusercontent.com/VPNforWindowsSub/configs/refs/heads/master/Diversity.txt',
+            'path': 'div',
+            'name': 'diversity'
         },
         # Add more sources here
     ],
