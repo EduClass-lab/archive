@@ -14,7 +14,7 @@ CONFIG = {
         },
         {
             'url': 'https://raw.githubusercontent.com/VPNforWindowsSub/configs/refs/heads/master/Resilience.txt',
-            'path': 'Res',
+            'path': 'res',
             'name': 'resilience'
         },
         # Add more sources here
