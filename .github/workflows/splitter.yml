@@ -1,0 +1,44 @@
+
+name: splitter Proxies
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #  https://crontab.guru/
+  # - cron: "30 16 * * *"
+
+
+jobs:
+  test-and-sort-proxies:
+    name: splitter
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7.0.0
+
+      - name: Setup Python
+        uses: actions/setup-python@v6.3.0
+        with:
+          python-version: "3.x"
+
+      # - name: Install Python Dependencies
+      #   run: |
+      #     pip install requests
+
+      - name: splitter app
+        run: |
+          python splitter.py
+
+      - name: Commit and Push Results
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git pull origin ${{ github.ref_name }}
+          git add -A
+          if ! git diff --staged --quiet; then
+            git commit -m "✔️ Archived list"
+            git push
+          else
+            echo "No changes to commit."
+          fi
