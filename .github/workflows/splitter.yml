@@ -28,7 +28,7 @@ jobs:
 
       - name: splitter app
         run: |
-          python splitter.py
+          python ./tools/splitter.py
 
       - name: Commit and Push Results
         run: |
